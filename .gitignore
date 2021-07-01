@@ -1,0 +1,14 @@
+# system files
+**/.DS_Store
+**/.vscode
+**/.idea
+
+# dependencies
+**/node_modules
+
+# logs
+**/npm-debug.log
+**/.git
+**/.npmrc
+**/package-lock.json
+**/debug.log
