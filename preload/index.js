@@ -38,32 +38,21 @@ window.exports = {
     }
   },
   converter: {
-    mode: 'list',
+    mode: 'none',
     args: {
-      enter: (action, callbackSetList) => {
-        if (/^\d/.test(action.payload)) {
-          callbackSetList(getDigitConvertList(action.payload.trim()))
-        } else {
-          const num = Nzh.cn.decodeB(action.payload)
-          if (typeof num !== 'number') return
-          const list = [{
-            title: num.toString(),
-            description: action.payload,
-            icon: 'yuan.png'
-          }]
-          if (num > 1000) {
-            list.push({
-              title: num.toString().replace(/\d+/, s => s.replace(/(\d)(?=(\d{3})+$)/g, '$1,')),
-              description: '复制 - 人民币千分位',
-              icon: 'yuan.png'
-            })
-          }
-          callbackSetList(list)
-        }
-      },
-      select: (action, itemData) => {
+      enter: (action) => {
         window.utools.hideMainWindow()
-        window.utools.copyText(itemData.title)
+        if (/^\d/.test(action.payload)) {
+          const result = Nzh.cn.toMoney(action.payload.replace(/,/g, ''), { outSymbol: false })
+          window.utools.copyText(result)
+          window.utools.showNotification('"' + result + '" 已复制')
+          window.utools.outPlugin()
+          return
+        }
+        const num = Nzh.cn.decodeB(action.payload)
+        if (typeof num !== 'number') return
+        window.utools.copyText(num.toString())
+        window.utools.showNotification('"' + num + '" 已复制')
         window.utools.outPlugin()
       }
     }
